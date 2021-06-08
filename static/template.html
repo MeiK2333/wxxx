@@ -1,0 +1,29 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <script src="/wxxx.js"></script>
+  <script src="/app-wxss.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="app"></div>
+</body>
+
+<script>
+  const app = document.querySelector("#app");
+  let vNode = null;
+  document.addEventListener('generateFuncReady', async function (e) {
+    const node = e.detail.generateFunc();
+
+    const { data } = await axios.post('/wxxx/page/data', {
+      path: window.location.pathname
+    });
+    const elem = wxNodeToElem(e.detail.generateFunc(data));
+    app.append(elem);
+    vNode = node;
+  });
+</script>
+
+</html>

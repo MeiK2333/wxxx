@@ -130,3 +130,9 @@ dmypy.json
 .vscode
 .idea
 output
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.vscode
