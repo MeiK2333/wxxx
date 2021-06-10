@@ -13,6 +13,7 @@ global.wxxx.components = {};
 global.wxxx.pages = {};
 global.wxxx.behavior = {};
 global.define = function (path, func) {
+  console.log(path);
   __wxAppCurrentFile__ = path.slice(0, path.length - 3);
 }
 global.Component = (component) => {

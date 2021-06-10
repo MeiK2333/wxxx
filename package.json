@@ -20,7 +20,8 @@
   "homepage": "https://github.com/MeiK2333/wxxx#readme",
   "dependencies": {
     "ejs": "^3.1.6",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-ws": "^5.0.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.12",

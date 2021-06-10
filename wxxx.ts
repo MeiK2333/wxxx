@@ -5,6 +5,7 @@ import fs, { promises } from 'fs';
 const service = require('./core/service');
 
 const app = express();
+var expressWs = require('express-ws')(app);
 app.use(express.json());
 app.use(express.static('static'));
 const output_path = path.join(__dirname, 'output');
@@ -13,6 +14,16 @@ const port = 8777;
 app.get('/', (req, res) => {
   res.send('Hello World!');
 })
+
+//@ts-ignore
+app.ws('/event', function (ws, req) {
+  ws.send(JSON.stringify({
+    "event": "reload",
+  }));
+  ws.on('message', function (msg: any) {
+    ws.send(msg);
+  });
+});
 
 app.post('/wxxx/page/data', (req, res) => {
   const path: String = req.body.path;

@@ -29,7 +29,27 @@ function wxNodeToElem(node) {
           console.log(value)
         })
       }
+      if (node.tag === 'wx-navigator' && key === 'url') {
+        elem.addEventListener('click', (e) => {
+          console.log(e);
+          console.log(value);
+        })
+      }
     }
   }
   return elem;
+}
+
+function eventSocket() {
+  const socket = new WebSocket('ws://localhost:8777/event');
+  socket.addEventListener('open', function (event) {
+    socket.send('Hello Server!');
+  });
+  socket.addEventListener('message', function (event) {
+    console.log('Message from server ', event.data);
+  });
+  socket.addEventListener('close', function (event) {
+    console.log('close');
+  });
+  return socket;
 }
