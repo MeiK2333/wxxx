@@ -1,0 +1,106 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>WXXX</title>
+  <script src="/wxxx.js"></script>
+  <script src="/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="root">
+  </div>
+  <div style="height: 50px; display: none;" id="tabBar">
+  </div>
+</body>
+
+<script>
+  const pages = [];
+  const root = document.querySelector('#root');
+  function openPage(path) {
+    const elem = document.createElement('iframe');
+    elem.src = path;
+    for (const page of pages) {
+      page.style.display = 'none';
+    }
+    pages.push(elem);
+    root.appendChild(elem);
+  }
+  axios.get('/app-config.json').then(({ data }) => {
+    if (data.tabBar) {
+      root.style.height = 'calc(100% - 50px)';
+      const tabBar = document.querySelector('#tabBar');
+      tabBar.style.display = 'flex';
+      tabBar.style.color = data.tabBar.color;
+      tabBar.style['background-color'] = data.tabBar.backgroundColor;
+
+      for (const li of data.tabBar.list) {
+        const elem = document.createElement('div');
+        const img = new Image();
+        img.src = 'data:image/png;base64,' + li.iconData;
+        elem.appendChild(img);
+        const textDiv = document.createElement('div');
+        const text = document.createElement('span');
+        text.innerText = li.text;
+        textDiv.appendChild(text);
+        elem.appendChild(textDiv);
+
+        elem.addEventListener('click', (e) => {
+          const src = li.pagePath.slice(0, li.pagePath.length - 5);
+          for (const p of pages) {
+            if (p.src.endsWith(src)) {
+              for (const p1 of pages) {
+                p1.style.display = 'none';
+              }
+              p.style.display = 'block';
+              return;
+            }
+          }
+          openPage(src);
+        })
+
+        tabBar.appendChild(elem);
+      }
+    }
+
+    const indexPage = data.pages[0];
+    openPage(indexPage);
+    console.log(data);
+  });
+</script>
+
+<style>
+  body {
+    margin: 0px;
+  }
+
+  iframe {
+    height: 100%;
+    width: 100%;
+    border-width: 0px;
+    border-style: unset;
+  }
+
+  #tabBar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+  }
+
+  #tabBar div {
+    text-decoration: none;
+    /*去掉前面的圆点*/
+    list-style: none;
+  }
+
+  #tabBar div img {
+    height: 25px;
+  }
+
+  #tabBar div span {
+    font-size: 9px;
+  }
+</style>
+
+</html>
