@@ -6,6 +6,11 @@ global.window = {
     width: 375
   }
 };
+global.__wxAppCode__ = {};
+global.__vd_version_info__ = {};
+global.__WXML_GLOBAL__ = {
+  wxs_nf_init: true
+}
 
 Object.defineProperty(global, "__g", {
   configurable: false,

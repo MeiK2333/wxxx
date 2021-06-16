@@ -67,14 +67,21 @@ function parse() {
 	}
 }
 
-function appService() {
-	const body = fs.readFileSync(path.join(output, 'app-service.js'));
+function appServiceJs(packagePath: string) {
+	if (!fs.existsSync(path.join(output, packagePath, 'app-service.js'))) {
+		console.error(`分包 ${packagePath} 不存在！请尽可能补足所有分包！`);
+		return;
+	}
+	let body = fs.readFileSync(path.join(output, packagePath, 'app-service.js')).toString();
+	if (packagePath !== '') {
+		body = fs.readFileSync(path.join(output, 'app-service.js')).toString() + body;
+	}
 	const script = new vm.Script(`var __global_result__ = {};
 function define (name, func) {
 	const code = func.toString();
 	__global_result__[name] = code;
 }
-	` + body.toString());
+	` + body);
 	const context = {
 		require: () => { },
 		definePlugin: () => { },
@@ -98,6 +105,16 @@ function define (name, func) {
 			func = func.slice(13).trim();
 		}
 		fs.writeFileSync(filepath, func);
+	}
+}
+
+function appService() {
+	appServiceJs('');
+	const appConfig = JSON.parse(fs.readFileSync(path.join(output, 'app-config.json')).toString());
+	if ('subPackages' in appConfig) {
+		for (const packages of appConfig.subPackages) {
+			appServiceJs(packages.root);
+		}
 	}
 }
 

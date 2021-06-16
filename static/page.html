@@ -1,0 +1,27 @@
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <script src="/wxxx.js"></script>
+  <script src="/app-wxss.js"></script>
+  <script src="/page-frame.js"></script>
+  <!-- TODO: 导入分包的 JS -->
+  <script src="/axios.min.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div></div>
+  </div>
+</body>
+
+<script>
+  wxxxGlobal.app = document.querySelector("#app");
+  document.addEventListener('generateFuncReady', async function (e) {
+    webSocketInit(e.detail.generateFunc);
+  });
+</script>
+
+{{ body | safe }}
+
+</html>

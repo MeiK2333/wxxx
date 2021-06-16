@@ -1,3 +1,27 @@
+const wxxxGlobal = {};
+wxxxGlobal.path = window.location.pathname;
+
+function webSocketInit(generateFunc) {
+  wxxxGlobal.generateFunc = generateFunc;
+  wxxxGlobal.socket = new WebSocket(`ws://localhost:8777/event?path=${wxxxGlobal.path}`);
+  wxxxGlobal.socket.addEventListener('message', function (event) {
+    const req = JSON.parse(event.data);
+    if (req.event === 'reload') {
+      const elem = wxNodeToElem(wxxxGlobal.generateFunc(req.vNode));
+      // TODO: diff vNode 部分更新
+      wxxxGlobal.app.replaceChild(elem, wxxxGlobal.app.firstElementChild);
+    }
+  });
+}
+
+function clickEvent(e, targetElem) {
+  const resp = Object.assign({}, e);
+  resp.currentTarget = {
+    id: targetElem.id
+  };
+  return resp;
+}
+
 function wxNodeToElem(node) {
   if (typeof node === 'string') {
     const elem = document.createTextNode(node);
@@ -25,12 +49,17 @@ function wxNodeToElem(node) {
       elem.setAttribute(key, value);
       if (key === 'bindtap') {
         elem.addEventListener('click', (e) => {
-          console.log(e);
-          console.log(value)
+          const req = {
+            event: 'func',
+            func: value,
+            param: clickEvent(e, elem)
+          };
+          wxxxGlobal.socket.send(JSON.stringify(req));
         })
       }
       if (node.tag === 'wx-navigator' && key === 'url') {
         elem.addEventListener('click', (e) => {
+          window.parent.openPage(value);
           console.log(e);
           console.log(value);
         })
@@ -38,18 +67,4 @@ function wxNodeToElem(node) {
     }
   }
   return elem;
-}
-
-function eventSocket() {
-  const socket = new WebSocket('ws://localhost:8777/event');
-  socket.addEventListener('open', function (event) {
-    socket.send('Hello Server!');
-  });
-  socket.addEventListener('message', function (event) {
-    console.log('Message from server ', event.data);
-  });
-  socket.addEventListener('close', function (event) {
-    console.log('close');
-  });
-  return socket;
 }

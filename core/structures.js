@@ -13,15 +13,16 @@ global.wxxx.components = {};
 global.wxxx.pages = {};
 global.wxxx.behavior = {};
 global.define = function (path, func) {
-  console.log(path);
   __wxAppCurrentFile__ = path.slice(0, path.length - 3);
 }
-global.Component = (component) => {
+global.Component = function (component) {
   global.wxxx.components[__wxAppCurrentFile__] = component;
 }
-global.Page = (page) => {
+global.Page = function (page) {
   global.wxxx.pages[__wxAppCurrentFile__] = page;
+  return global.wxxx.pages[__wxAppCurrentFile__];
 }
 global.Behavior = function (behavior) {
   global.wxxx.pages[__wxAppCurrentFile__] = behavior;
+  return global.wxxx.pages[__wxAppCurrentFile__];
 }
