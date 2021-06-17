@@ -5,7 +5,18 @@ require('./funcs');
 require('./structures');
 
 require('../output/app-service');
-require('../output/packageComponent/app-service');
+
+const fs = require('fs');
+const path = require('path');
+global.wxxx.appConfigJson = JSON.parse(fs.readFileSync('./output/app-config.json').toString());
+if ('subPackages' in global.wxxx.appConfigJson) {
+  for (const packages of global.wxxx.appConfigJson.subPackages) {
+    const p = path.join('../output', packages.root, 'app-service');
+    if (fs.existsSync(path.join('output', packages.root, 'app-service.js'))) {
+      require(p);
+    }
+  }
+}
 
 
 class Page {
@@ -45,4 +56,10 @@ module.exports = {
     return global.wxxx.pages[path];
   },
   openPage,
+  subPackages: function() {
+    if ('subPackages' in wxxx.appConfigJson) {
+      return wxxx.appConfigJson.subPackages;
+    }
+    return [];
+  }
 };

@@ -5,7 +5,9 @@
   <script src="/wxxx.js"></script>
   <script src="/app-wxss.js"></script>
   <script src="/page-frame.js"></script>
-  <!-- TODO: 导入分包的 JS -->
+  {% for i in subPackages %}
+  <script src="/{{i.root}}page-frame.js"></script>
+  {% endfor %}
   <script src="/axios.min.js"></script>
 </head>
 

@@ -46,7 +46,7 @@ app.get('/*', async (req, res) => {
     if (fs.existsSync(f)) {
       res.set('Content-Type', 'text/html');
       const body = await promises.readFile(f);
-      res.send(nunjucks.render('page.html', { body: body }));
+      res.send(nunjucks.render('page.html', { body: body, subPackages: service.subPackages() }));
       return;
     }
     res.status(404).send('Not found!');

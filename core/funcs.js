@@ -28,4 +28,9 @@ global.wx = {
   reportAnalytics() {
 
   },
+  getRecorderManager() {
+
+  },
+  createInnerAudioContext() { },
+  getBackgroundAudioManager() { },
 };
